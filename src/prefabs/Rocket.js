@@ -6,7 +6,16 @@ class Rocket extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);                       // add object to existing scene
         this.isFiring = false;                          // track rocket's firing status
         this.moveSpeed = 4;                             // pixels per frame
-        this.sfxRocket = scene.sound.add('sfx_rocket'); // add rocket sfx
+        // | Normal Strumming
+        this.strumSounds = scene.sound.add('sfx_strumSounds');
+        let strumMarker =   { name: 'strum1', start: 1.1, duration: 6.9};   // Strum 1
+        this.strumSounds.addMarker(strumMarker); 
+        strumMarker =       { name: 'strum2', start: 8.2, duration: 6.8};   // Strum 2
+        this.strumSounds.addMarker(strumMarker);
+        // | Strum when another strum is playing
+        this.altStrum = scene.sound.add('sfx_strumSounds');
+        strumMarker =       { name: 'strumA', start: 51.0, duration: 0.512};   // Alt Strum
+        this.altStrum.addMarker(strumMarker);
     }
 
     update() {
@@ -23,7 +32,13 @@ class Rocket extends Phaser.GameObjects.Sprite {
         // | Firing
         if (Phaser.Input.Keyboard.JustDown(keyF) && !this.isFiring) {
             this.isFiring = true;
-            this.sfxRocket.play();  // play sfx
+            // | Sound effects
+            if (!this.strumSounds.isPlaying) {
+                this.strumSounds.play('strum1');
+            }
+            else {
+                this.altStrum.play('strumA');
+            }
         }
         
         // --- MOVEMENT BASED ON STATE

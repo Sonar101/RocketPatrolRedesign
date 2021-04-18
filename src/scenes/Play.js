@@ -32,7 +32,6 @@ class Play extends Phaser.Scene {
     }
     
     create() {
-        
         // --- PLACING VISUAL ASSETS
         this.street = this.add.tileSprite(0 , 0, config.width, config.height, 'Street').setOrigin(0, 0);
         // | Note (Rocket projectile)
@@ -56,6 +55,11 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
             frameRate: 30
         });
+
+        // --- SETTIMG UP SOUNDS
+        // | Ambience
+        this.ambience = this.sound.add('sfx_ambience').setVolume(.5);
+        
 
         // --- SETTING UP THE SCOREBOARD
         // | Initialize score
@@ -114,6 +118,11 @@ class Play extends Phaser.Scene {
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start('menuScene');
         }
+
+        // --- MANAGE MUSIC AND AMBIENCE
+        if (!this.ambience.isPlaying) {
+            this.ambience.play();
+        }
         
         // --- CLOUD SPRITE TILE SCROLLING
         this.clouds.tilePositionX -= 1;
@@ -171,6 +180,5 @@ class Play extends Phaser.Scene {
         // score add and repaint
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
-        this.sound.play('sfx_explosion');
     }
 }
