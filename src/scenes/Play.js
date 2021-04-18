@@ -63,7 +63,9 @@ class Play extends Phaser.Scene {
 
         // --- SETTING UP THE SCOREBOARD
         // | Initialize score
-        this.p1Score = 1000;
+        this.p1Score = 200;
+        this.scoreDrainRate = 1;
+        this.scoreJustAdded = false;
         // | Displaying score
         let scoreConfig = {
             fontFamily: 'Impact',
@@ -110,7 +112,7 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     }
 
-    update() {
+    update(time, delta) {
         // --- 'RESTART' / 'RETURN TO MENU' KEY PROMPT CONTROLS 
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
@@ -127,7 +129,7 @@ class Play extends Phaser.Scene {
         // --- CLOUD SPRITE TILE SCROLLING
         this.clouds.tilePositionX -= 1;
         
-        // --- UPDATING INDIVIDUAL GAME OBJECTS 
+        // --- UPDATING INDIVIDUAL SPRITE OBJECTS 
         if (!this.gameOver) {
             // | player projectile and player character
             this.p1Note.update();   
@@ -151,6 +153,13 @@ class Play extends Phaser.Scene {
             this.p1Note.reset();
             this.shipExplode(this.ped01);
         }
+
+        // --- SCORE MANAGEMENT
+        if (!this.scoreJustAdded) {
+            this.p1Score -= (delta / 1000) * this.scoreDrainRate;
+            this.updateScore(this.p1Score);
+        }
+        this.scoreJustAdded = false;
     }
 
     // --- HELPER METHODS
@@ -179,6 +188,11 @@ class Play extends Phaser.Scene {
         });
         // score add and repaint
         this.p1Score += ship.points;
-        this.scoreLeft.text = this.p1Score;
+        this.updateScore(this.p1Score);
+        this.scoreJustAdded = true;
+    }
+
+    updateScore(value) {
+        this.scoreLeft.text = '$' + Math.round(value);
     }
 }
