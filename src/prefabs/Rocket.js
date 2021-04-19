@@ -96,7 +96,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
             
             if (!this.strumSounds.isPlaying) {
                 this.strumSounds.play('strum' + this.currStrum);
-                console.log("played strum" + this.currStrum)
                 this.currStrum++;
             }
             else {
