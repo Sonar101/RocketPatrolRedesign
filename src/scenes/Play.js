@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
         this.load.image('Ped1', './assets/Pedestrian1.png');
         this.load.image('Ped2', './assets/Pedestrian2.png');
         this.load.image('Ped3', './assets/Pedestrian3.png');
+        this.load.image('Ped4', './assets/PedestrianFast.png');
         // | Street sprite
         this.load.image('Street', './assets/Street.png');
         // | Cloud shadow sprite
@@ -42,6 +43,7 @@ class Play extends Phaser.Scene {
         this.ped01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'Ped1', 0, 30).setOrigin(0, 0);
         this.ped02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'Ped2', 0, 20).setOrigin(0, 0);
         this.ped03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'Ped3', 0, 10).setOrigin(0,0);
+        this.ped04 = new Spaceship(this, game.config.width + borderUISize*3, (borderUISize*5 + borderPadding*2) * (1.2), 'Ped4', 0, 20, true).setOrigin(0, 0);
         // | Cloud Shadows
         this.clouds = this.add.tileSprite(0 , 0, config.width, config.height, 'Clouds').setOrigin(0, 0);
         // | Light gradient
@@ -64,7 +66,7 @@ class Play extends Phaser.Scene {
 
         // --- SETTING UP THE SCOREBOARD
         // | Initialize score
-        this.p1Score = 50;
+        this.p1Score = 500; // 50
         this.scoreDrainRate = 1;
         this.scoreJustAdded = false;
         this.timeElapsed = 0.0;
@@ -84,13 +86,6 @@ class Play extends Phaser.Scene {
 
         // --- GAME OVER FLAG
         this.gameOver = false;
-
-        // --- GAME CLOCK
-        //this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-        //    this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', gameOverConfig).setOrigin(0.5);
-        //    this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', gameOverConfig).setOrigin(0.5);
-        //    this.gameOver = true;
-        //}, null, this);
 
         // --- DEFINE KEYS
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -124,6 +119,7 @@ class Play extends Phaser.Scene {
             this.ped01.update();
             this.ped02.update();
             this.ped03.update();
+            this.ped04.update();
         }
 
         // --- MANAGING SCORE DRAIN

@@ -58,7 +58,7 @@ class Menu extends Phaser.Scene {
             // | Easy mode
             game.settings = {
                 spaceshipSpeed: 3,
-                gameTimer: 60000
+                gameTimer: 5000
             }
             this.menuStrumSounds.play('strum3');
             this.scene.start('playScene');
