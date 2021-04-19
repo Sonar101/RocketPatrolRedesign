@@ -38,6 +38,15 @@ class Menu extends Phaser.Scene {
         menuConfig.color = '#000';
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for novice or → for Expert', menuConfig).setOrigin(0.5);
 
+        // --- AUDIO FOR BUTTON PROMPTS
+        this.menuStrumSounds = this.sound.add('sfx_strumSounds');
+        let strumMarker =   { name: 'strum1', start: 3.85, duration: 3.71};   
+        this.menuStrumSounds.addMarker(strumMarker);                            // Strum 1
+        strumMarker =   { name: 'strum2', start: 3.85, duration: 3.71};   
+        this.menuStrumSounds.addMarker(strumMarker);                            // Strum 2
+        strumMarker =   { name: 'strum3', start: 73.83, duration: 4.48};   
+        this.menuStrumSounds.addMarker(strumMarker);                            // Strum 3
+
         // --- DEFINE KEYS
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -51,7 +60,7 @@ class Menu extends Phaser.Scene {
                 spaceshipSpeed: 3,
                 gameTimer: 60000
             }
-            this.sound.play('sfx_select');
+            this.menuStrumSounds.play('strum3');
             this.scene.start('playScene');
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {

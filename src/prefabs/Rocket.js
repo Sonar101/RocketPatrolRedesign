@@ -6,13 +6,19 @@ class Rocket extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);                       // add object to existing scene
         this.isFiring = false;                          // track rocket's firing status
         this.moveSpeed = 2;                             // pixels per frame
+        this.currStrum = 1;
+        this.maxStrums = 3;
+
         // | Normal Strumming
-        
         this.strumSounds = scene.sound.add('sfx_strumSounds');
-        let strumMarker =   { name: 'strum1', start: 1.1, duration: 6.9};   
+        let strumMarker =   { name: 'strum1', start: 3.85, duration: 3.71};   
         this.strumSounds.addMarker(strumMarker);                            // Strum 1
-        strumMarker =       { name: 'strum2', start: 8.2, duration: 6.8};   
+        strumMarker =       { name: 'strum2', start: 1.10, duration: 2.71};   
         this.strumSounds.addMarker(strumMarker);                            // Strum 2
+        strumMarker =       { name: 'strum3', start: 3.85, duration: 3.71};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 3
+        strumMarker =       { name: 'strum4', start: 8.21, duration: 6.77};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 4
         
         // | Strum when another strum is playing
         this.altStrum = scene.sound.add('sfx_strumSounds');
@@ -35,12 +41,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
         if (Phaser.Input.Keyboard.JustDown(keyF) && !this.isFiring) {
             this.isFiring = true;
             // | Sound effects
-            if (!this.strumSounds.isPlaying) {
-                this.strumSounds.play('strum1');
-            }
-            else {
-                this.altStrum.play('strumA');
-            }
+            this.pickStrum();
         }
         
         // --- MOVEMENT BASED ON STATE
@@ -59,5 +60,31 @@ class Rocket extends Phaser.GameObjects.Sprite {
     reset() {
         this.isFiring = false;
         this.y = game.config.height - borderUISize - borderPadding;
+    }
+    
+    pickStrum(strumNumber) {
+        // | Play the given strum
+        if (strumNumber != undefined) {
+            if (!this.strumSounds.isPlaying) {
+                this.strumSounds.play('strum' + strumNumber);
+            }
+            else {
+                this.altStrum.play('strumA');
+            }
+        }
+        // | PLay the current strum if none given
+        else {
+            if (this.currStrum > this.maxStrums) {
+                this.currStrum = 1;
+            }
+            
+            if (!this.strumSounds.isPlaying) {
+                this.strumSounds.play('strum' + this.currStrum);
+                this.currStrum++;
+            }
+            else {
+                this.altStrum.play('strumA');
+            }
+        }
     }
 }

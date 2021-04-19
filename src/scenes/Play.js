@@ -59,13 +59,15 @@ class Play extends Phaser.Scene {
         // --- SETTIMG UP SOUNDS
         // | Ambience
         this.ambience = this.sound.add('sfx_ambience').setVolume(.5);
-        
+        this.ambience.setLoop(true);
+        this.ambience.play();
 
         // --- SETTING UP THE SCOREBOARD
         // | Initialize score
-        this.p1Score = 200;
+        this.p1Score = 50;
         this.scoreDrainRate = 1;
         this.scoreJustAdded = false;
+        this.timeElapsed = 0.0;
         // | Displaying score
         let scoreConfig = {
             fontFamily: 'Impact',
@@ -80,30 +82,15 @@ class Play extends Phaser.Scene {
         }
         this.scoreLeft = this.add.text(this.scoreBoard.x + 2, this.scoreBoard.y - 5, '$' + this.p1Score, scoreConfig).setOrigin(.5,.5);
 
-        // --- SETTING UP GAME-OVER TEXT
-        // | Initialize score
-        let gameOverConfig = {
-            fontFamily: 'Impact',
-            fontSize: '32px',
-            backgroundColor: '#03fc13',
-            color: '#000000',
-            align: 'center',
-            padding: {
-                top: 5,
-                bottom: 5,
-            },
-            fixedWidth: 0
-        }
-
         // --- GAME OVER FLAG
         this.gameOver = false;
 
         // --- GAME CLOCK
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', gameOverConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', gameOverConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }, null, this);
+        //this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+        //    this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', gameOverConfig).setOrigin(0.5);
+        //    this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', gameOverConfig).setOrigin(0.5);
+        //    this.gameOver = true;
+        //}, null, this);
 
         // --- DEFINE KEYS
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -115,15 +102,14 @@ class Play extends Phaser.Scene {
     update(time, delta) {
         // --- 'RESTART' / 'RETURN TO MENU' KEY PROMPT CONTROLS 
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.ambience.stop();
+            this.timeElapsed = 0;
             this.scene.restart();
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.ambience.stop();
+            this.timeElapsed = 0;
             this.scene.start('menuScene');
-        }
-
-        // --- MANAGE MUSIC AND AMBIENCE
-        if (!this.ambience.isPlaying) {
-            this.ambience.play();
         }
         
         // --- CLOUD SPRITE TILE SCROLLING
@@ -140,8 +126,13 @@ class Play extends Phaser.Scene {
             this.ped03.update();
         }
 
+        // --- MANAGING SCORE DRAIN
+        this.timeElapsed += delta / 1000;
+        let drainProgress = this.inverseLerp(this.timeElapsed, 10, 55);
+        this.scoreDrainRate = Phaser.Math.Linear(1, 20, drainProgress);
+
         // --- COLLISION CHECKING
-        if(this.checkCollision(this.p1Note, this.ped03)) {
+        if (this.checkCollision(this.p1Note, this.ped03)) {
             this.p1Note.reset();
             this.shipExplode(this.ped03);
         }
@@ -155,11 +146,17 @@ class Play extends Phaser.Scene {
         }
 
         // --- SCORE MANAGEMENT
-        if (!this.scoreJustAdded) {
+        if (!this.scoreJustAdded && !this.gameOver) {
             this.p1Score -= (delta / 1000) * this.scoreDrainRate;
             this.updateScore(this.p1Score);
         }
         this.scoreJustAdded = false;
+
+        // --- CHECK FOR GAME OVER
+        if (this.p1Score <= 0 && !this.gameOver) {
+            this.gameOverScreen();
+            this.gameOver = true;
+        }
     }
 
     // --- HELPER METHODS
@@ -194,5 +191,48 @@ class Play extends Phaser.Scene {
 
     updateScore(value) {
         this.scoreLeft.text = '$' + Math.round(value);
+    }
+
+    gameOverScreen() {
+        let gameOverConfig = {
+            fontFamily: 'Impact',
+            fontSize: '32px',
+            backgroundColor: '#03fc13',
+            color: '#6f00ff',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0
+        }
+        
+        this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', gameOverConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', gameOverConfig).setOrigin(0.5);
+    }
+
+    inverseLerp(point, a, b)
+    {
+        if (a == b && point >= b) {
+            return 1.0;
+        }
+        else if (a == b && point < b) {
+            return 0.0;
+        }
+        
+        point = Phaser.Math.Clamp(point, a, b);
+        if (point == a)
+            return 0.0;
+        else if (point == b)
+            return 1.0;
+        else {
+            let d = b - a;
+            let f = b - point;
+            return (d - f) / d;
+        }
+    }
+
+    resetPlay() {
+        
     }
 }
