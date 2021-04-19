@@ -60,7 +60,7 @@ class Play extends Phaser.Scene {
 
         // --- SETTIMG UP SOUNDS
         // | Ambience
-        this.ambience = this.sound.add('sfx_ambience').setVolume(.5);
+        this.ambience = this.sound.add('sfx_ambience');
         this.ambience.setLoop(true);
         this.ambience.play();
 
@@ -128,6 +128,10 @@ class Play extends Phaser.Scene {
         this.scoreDrainRate = Phaser.Math.Linear(1, 20, drainProgress);
 
         // --- COLLISION CHECKING
+        if (this.checkCollision(this.p1Note, this.ped04)) {
+            this.p1Note.reset();
+            this.shipExplode(this.ped04);
+        }
         if (this.checkCollision(this.p1Note, this.ped03)) {
             this.p1Note.reset();
             this.shipExplode(this.ped03);
