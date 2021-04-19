@@ -14,6 +14,7 @@ class Play extends Phaser.Scene {
         this.load.image('Ped2', './assets/Pedestrian2.png');
         this.load.image('Ped3', './assets/Pedestrian3.png');
         this.load.image('Ped4', './assets/PedestrianFast.png');
+        this.load.image('Emoji', './assets/Emoji.png');
         // | Street sprite
         this.load.image('Street', './assets/Street.png');
         // | Cloud shadow sprite
@@ -128,19 +129,19 @@ class Play extends Phaser.Scene {
         this.scoreDrainRate = Phaser.Math.Linear(1, 20, drainProgress);
 
         // --- COLLISION CHECKING
-        if (this.checkCollision(this.p1Note, this.ped04)) {
+        if (this.checkCollision(this.p1Note, this.ped04) && !this.ped04.isHappy) {
             this.p1Note.reset();
             this.shipExplode(this.ped04);
         }
-        if (this.checkCollision(this.p1Note, this.ped03)) {
+        if (this.checkCollision(this.p1Note, this.ped03) && !this.ped03.isHappy) {
             this.p1Note.reset();
             this.shipExplode(this.ped03);
         }
-        if (this.checkCollision(this.p1Note, this.ped02)) {
+        if (this.checkCollision(this.p1Note, this.ped02) && !this.ped02.isHappy) {
             this.p1Note.reset();
             this.shipExplode(this.ped02);
         }
-        if (this.checkCollision(this.p1Note, this.ped01)) {
+        if (this.checkCollision(this.p1Note, this.ped01) && !this.ped01.isHappy) {
             this.p1Note.reset();
             this.shipExplode(this.ped01);
         }
@@ -173,16 +174,9 @@ class Play extends Phaser.Scene {
     }
 
     shipExplode(ship) {
-        // temporarily hide ship
-        ship.alpha = 0;
-        // create explosion sprite at ship's position
-        let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
-        boom.anims.play('explode');             // play explode animation
-        boom.on('animationcomplete', () => {    // callback after anim completes
-            ship.reset();           // reset ship position
-            ship.alpha = 1;         // make ship visisble again
-            boom.destroy();         // remove explosion sprite
-        });
+
+        ship.makeHappy();       // reset ship position
+        ship.alpha = 1;         // make ship visisble again
         // score add and repaint
         this.p1Score += ship.points;
         this.updateScore(this.p1Score);
@@ -230,9 +224,5 @@ class Play extends Phaser.Scene {
             let f = b - point;
             return (d - f) / d;
         }
-    }
-
-    resetPlay() {
-        
     }
 }

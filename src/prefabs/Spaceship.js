@@ -5,16 +5,20 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.scene = scene;
         this.points = pointValue;                       // store pointValue
         this.moveSpeed = fast ? game.settings.spaceshipSpeed * 1.2 : game.settings.spaceshipSpeed;  // pixels per frame
-        
         this.isFast = fast;
-        this.waiting = true;
-        this.waitTimer = scene.time.delayedCall(5 * 1000, () => { // 5 second timer
-            this.waiting = false;
+        
+        this.isHappy = false;
+        this.isWaiting = true;
+        this.happyDuration = 3.5 * 1000;
+        this.waitDuration = 5 * 1000;
+        //this.happyTimer;
+        this.waitTimer = scene.time.delayedCall(this.waitDuration, () => { 
+            this.isWaiting = false;
         }, null, this);
     }
 
     update() {
-        if (!this.isFast || (this.isFast && !this.waiting)) {
+        if (!this.isHappy && (!this.isFast || (this.isFast && !this.isWaiting))) {
             // move spaceship left
             this.x -= this.moveSpeed;
             // wrap around from left edge to right edge
@@ -25,10 +29,21 @@ class Spaceship extends Phaser.GameObjects.Sprite {
 
     reset() {
         this.x = game.config.width;
-        if (this.isFast)
-            this.waiting = true;
+        if (this.isFast) {
+            this.isWaiting = true;
+        }
             this.waitTimer = this.scene.time.delayedCall(5 * 1000, () => { // 5 second timer
-                this.waiting = false;
+                this.isWaiting = false;
             }, null, this);
+    }
+
+    makeHappy() {
+        this.isHappy = true;
+        this.emoji = this.scene.add.sprite(this.x - 30, this.y + 30, 'Emoji');
+        this.happyTimer = this.scene.time.delayedCall(this.happyDuration, () => {
+            this.isHappy = false;
+            this.emoji.destroy();
+            this.reset();
+        }, null, this);
     }
 }

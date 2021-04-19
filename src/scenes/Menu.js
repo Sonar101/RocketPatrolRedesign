@@ -23,7 +23,7 @@ class Menu extends Phaser.Scene {
         this.ambience.setLoop(true);
         // || Button sounds
         this.menuStrumSounds = this.sound.add('sfx_strumSounds');
-        let strumMarker =   { name: 'strum1', start: 3.85, duration: 3.9};   
+        let strumMarker =   { name: 'strum1', start: 3.9, duration: 3.88};   
         this.menuStrumSounds.addMarker(strumMarker);                            // Strum 1
         strumMarker =   { name: 'strum2', start: 16.69, duration: 3.93};   
         this.menuStrumSounds.addMarker(strumMarker);                            // Strum 2
