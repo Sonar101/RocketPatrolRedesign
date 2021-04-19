@@ -67,8 +67,8 @@ class Play extends Phaser.Scene {
 
         // --- SETTING UP THE SCOREBOARD
         // | Initialize score
-        this.p1Score = 500; // 50
-        this.scoreDrainRate = 1;
+        this.p1Score = game.settings.initialScore;
+        this.scoreDrainRate = game.settings.initialDrainRate;
         this.scoreJustAdded = false;
         this.timeElapsed = 0.0;
         // | Displaying score
@@ -126,7 +126,7 @@ class Play extends Phaser.Scene {
         // --- MANAGING SCORE DRAIN
         this.timeElapsed += delta / 1000;
         let drainProgress = this.inverseLerp(this.timeElapsed, 10, 55);
-        this.scoreDrainRate = Phaser.Math.Linear(1, 20, drainProgress);
+        this.scoreDrainRate = Phaser.Math.Linear(game.settings.initialDrainRate, 20, drainProgress);
 
         // --- COLLISION CHECKING
         if (this.checkCollision(this.p1Note, this.ped04) && !this.ped04.isHappy) {

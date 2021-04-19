@@ -48,7 +48,8 @@ class Menu extends Phaser.Scene {
                 // | Easy mode
                 game.settings = {
                     spaceshipSpeed: 3,
-                    gameTimer: 5000
+                    initialScore: 50,
+                    initialDrainRate: 1 
                 }
                 this.menuStrumSounds.play('strum3');
                 this.ambience.stop();
@@ -58,7 +59,8 @@ class Menu extends Phaser.Scene {
                 // | Hard mode
                 game.settings = {
                     spaceshipSpeed: 4,
-                    gameTimer: 45000
+                    initialScore: 150,
+                    initialDrainRate: 8 
                 }
                 this.menuStrumSounds.play('strum3');
                 this.ambience.stop();
