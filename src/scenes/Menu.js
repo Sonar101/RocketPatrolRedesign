@@ -19,7 +19,7 @@ class Menu extends Phaser.Scene {
         this.nextFrameNum = 2;
         // --- MENU AUDIO
         // || background ambience
-        this.ambience = this.sound.add('sfx_ambience').setVolume(0.5);
+        this.ambience = this.sound.add('sfx_ambience').setVolume(0.4);
         this.ambience.setLoop(true);
         // || Button sounds
         this.menuStrumSounds = this.sound.add('sfx_strumSounds');
@@ -49,7 +49,8 @@ class Menu extends Phaser.Scene {
                 game.settings = {
                     spaceshipSpeed: 3,
                     initialScore: 50,
-                    initialDrainRate: 1 
+                    initialDrainRate: 1, 
+                    drainRateMax: 15
                 }
                 this.menuStrumSounds.play('strum3');
                 this.ambience.stop();
@@ -60,7 +61,8 @@ class Menu extends Phaser.Scene {
                 game.settings = {
                     spaceshipSpeed: 4,
                     initialScore: 150,
-                    initialDrainRate: 8 
+                    initialDrainRate: 8,
+                    drainRateMax: 20 
                 }
                 this.menuStrumSounds.play('strum3');
                 this.ambience.stop();

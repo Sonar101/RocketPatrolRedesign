@@ -10,7 +10,7 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.isHappy = false;
         this.isWaiting = true;
         this.happyDuration = 3.5 * 1000;
-        this.waitDuration = 5 * 1000;
+        this.waitDuration = 9 * 1000;
         //this.happyTimer;
         this.waitTimer = scene.time.delayedCall(this.waitDuration, () => { 
             this.isWaiting = false;

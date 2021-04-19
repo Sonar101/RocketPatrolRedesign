@@ -7,7 +7,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
         this.isFiring = false;                          // track rocket's firing status
         this.moveSpeed = 2;                             // pixels per frame
         this.currStrum = 1;
-        this.maxStrums = 3;
+        this.maxStrums = 12;
 
         // | Normal Strumming
         this.strumSounds = scene.sound.add('sfx_strumSounds');
@@ -17,8 +17,24 @@ class Rocket extends Phaser.GameObjects.Sprite {
         this.strumSounds.addMarker(strumMarker);                            // Strum 2
         strumMarker =       { name: 'strum3', start: 3.85, duration: 3.71};   
         this.strumSounds.addMarker(strumMarker);                            // Strum 3
-        strumMarker =       { name: 'strum4', start: 8.21, duration: 6.77};   
+        strumMarker =       { name: 'strum4', start: 8.21, duration: 2.83};   
         this.strumSounds.addMarker(strumMarker);                            // Strum 4
+        strumMarker =       { name: 'strum5', start: 11.105, duration: 3.81};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 5
+        strumMarker =       { name: 'strum6', start: 16.71, duration: 3.59};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 6
+        strumMarker =       { name: 'strum7', start: 20.83, duration: 5.02};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 7
+        strumMarker =       { name: 'strum8', start: 26.42, duration: 3.72};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 8
+        strumMarker =       { name: 'strum9', start: 30.49, duration: 2.74};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 9
+        strumMarker =       { name: 'strum10', start: 33.36, duration: 7.99};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 10
+        strumMarker =       { name: 'strum11', start: 41.72, duration: 6.40};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 11
+        strumMarker =       { name: 'strum12', start: 48.65, duration: 4.06};   
+        this.strumSounds.addMarker(strumMarker);                            // Strum 12
         
         // | Strum when another strum is playing
         this.altStrum = scene.sound.add('sfx_strumSounds');
@@ -80,6 +96,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
             
             if (!this.strumSounds.isPlaying) {
                 this.strumSounds.play('strum' + this.currStrum);
+                console.log("played strum" + this.currStrum)
                 this.currStrum++;
             }
             else {

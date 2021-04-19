@@ -23,14 +23,8 @@ class Play extends Phaser.Scene {
         this.load.image('Gradient', './assets/LightGradient.png');
         // | Dollar Bill Scoreboard
         this.load.image('ScoreBoard', './assets/ScoreBoard.png');
-
-        // --- LOAD SPRITESHEETS
-        // | explosion
-        this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
-
-        // --- NO LONGER NEEDED
-        // this.load.image('starfield', './assets/starfield.png');
-        // this.load.image('rocket', './assets/rocket.png');
+        // | Game Over Menu
+        this.load.image('GameOverImage', './assets/GameOver.png');
     }
     
     create() {
@@ -44,24 +38,17 @@ class Play extends Phaser.Scene {
         this.ped01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'Ped1', 0, 30).setOrigin(0, 0);
         this.ped02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'Ped2', 0, 20).setOrigin(0, 0);
         this.ped03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'Ped3', 0, 10).setOrigin(0,0);
-        this.ped04 = new Spaceship(this, game.config.width + borderUISize*3, (borderUISize*5 + borderPadding*2) * (1.2), 'Ped4', 0, 20, true).setOrigin(0, 0);
+        this.ped04 = new Spaceship(this, game.config.width + borderUISize*3, (borderUISize*5 + borderPadding*2) * (1.2), 'Ped4', 0, 45, true).setOrigin(0, 0);
         // | Cloud Shadows
         this.clouds = this.add.tileSprite(0 , 0, config.width, config.height, 'Clouds').setOrigin(0, 0);
         // | Light gradient
         this.gradient = this.add.tileSprite(0 , 0, config.width, config.height, 'Gradient').setOrigin(0, 0);
         // | Dollar Bill Scoreboard
         this.scoreBoard = this.add.sprite(borderUISize * 3.5, borderUISize * 2, 'ScoreBoard').setOrigin(.5,.5);
-        
-        // --- ANIMATION CONFIG
-        this.anims.create({
-            key: 'explode',
-            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
-            frameRate: 30
-        });
 
         // --- SETTIMG UP SOUNDS
         // | Ambience
-        this.ambience = this.sound.add('sfx_ambience');
+        this.ambience = this.sound.add('sfx_ambience').setVolume(.4);
         this.ambience.setLoop(true);
         this.ambience.play();
 
@@ -125,8 +112,8 @@ class Play extends Phaser.Scene {
 
         // --- MANAGING SCORE DRAIN
         this.timeElapsed += delta / 1000;
-        let drainProgress = this.inverseLerp(this.timeElapsed, 10, 55);
-        this.scoreDrainRate = Phaser.Math.Linear(game.settings.initialDrainRate, 20, drainProgress);
+        let drainProgress = this.inverseLerp(this.timeElapsed, 10, 120); // Ramps from 10 seconds in to 90 seconds in
+        this.scoreDrainRate = Phaser.Math.Linear(game.settings.initialDrainRate, game.settings.drainRateMax, drainProgress);
 
         // --- COLLISION CHECKING
         if (this.checkCollision(this.p1Note, this.ped04) && !this.ped04.isHappy) {
@@ -174,7 +161,6 @@ class Play extends Phaser.Scene {
     }
 
     shipExplode(ship) {
-
         ship.makeHappy();       // reset ship position
         ship.alpha = 1;         // make ship visisble again
         // score add and repaint
@@ -190,9 +176,8 @@ class Play extends Phaser.Scene {
     gameOverScreen() {
         let gameOverConfig = {
             fontFamily: 'Impact',
-            fontSize: '32px',
-            backgroundColor: '#03fc13',
-            color: '#6f00ff',
+            fontSize: '84px',
+            color: '#f3cd00',
             align: 'center',
             padding: {
                 top: 5,
@@ -201,8 +186,9 @@ class Play extends Phaser.Scene {
             fixedWidth: 0
         }
         
-        this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', gameOverConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', gameOverConfig).setOrigin(0.5);
+        // | Game Over Menu
+        this.gameOverMenu = this.add.image(0, 0, 'GameOverImage').setOrigin(0,0);
+        this.add.text(game.config.width / 2, (game.config.width / 2) - 175, Math.round(this.timeElapsed), gameOverConfig).setOrigin(0.5);
     }
 
     inverseLerp(point, a, b)
