@@ -5,6 +5,7 @@ class Menu extends Phaser.Scene {
 
     preload() {
         // --- LOAD IMAGES
+        this.load.image('menu0', './assets/Credits.png');
         this.load.image('menu1', './assets/Menu1.png');
         this.load.image('menu2', './assets/Menu2.png');
         this.load.image('menu3', './assets/Menu3.png');
@@ -16,7 +17,7 @@ class Menu extends Phaser.Scene {
     create() {
         // --- DISPLAYING MENU
         this.frame = this.add.image(0,0,'menu1').setOrigin(0,0);
-        this.nextFrameNum = 2;
+        this.currFrameNum = 1;
         // --- MENU AUDIO
         // || background ambience
         this.ambience = this.sound.add('sfx_ambience').setVolume(0.4);
@@ -32,15 +33,19 @@ class Menu extends Phaser.Scene {
 
         // --- DEFINE KEYS
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     }
 
     update() {
         // --- KEY PROMPT CONTROLS
-        if (this.nextFrameNum <= 3) {
+        if (this.currFrameNum < 3) {
             if (Phaser.Input.Keyboard.JustDown(keyF)) {
                 this.pickMenuFrame();
+            }
+            if (Phaser.Input.Keyboard.JustDown(keyC) && !(this.currFrameNum == 0)) {
+                this.pickMenuFrame(0);
             }
         }
         else {
@@ -71,17 +76,36 @@ class Menu extends Phaser.Scene {
         }
     }
 
-    pickMenuFrame() {
-        if (this.nextFrameNum <= 3) {
-            if (this.nextFrameNum == 2) {
+    pickMenuFrame(preselectedFrame) {
+        if (preselectedFrame == undefined) {
+            if (this.currFrameNum == 0) {
+                this.menuStrumSounds.play('strum3');
+                this.frame.setTexture('menu1');
+                this.currFrameNum = 1;
+            }
+            else if (this.currFrameNum == 1) {
                 this.menuStrumSounds.play('strum1');
+                this.frame.setTexture('menu2');
+                this.currFrameNum = 2;
             }
-            else if (this.nextFrameNum == 3) {
+            else if (this.currFrameNum == 2) {
                 this.menuStrumSounds.play('strum2');
-                this.ambience.play();
+                this.frame.setTexture('menu3');
+                this.currFrameNum = 3;
             }
-            this.frame.setTexture('menu' + this.nextFrameNum);
-            this.nextFrameNum++;
+            else if (this.currFrameNum >= 3) {
+                console.log("Error - Out of menu images")
+            }
+        }
+        else {
+            if (preselectedFrame >= 0 && preselectedFrame < 3) {
+                this.menuStrumSounds.play('strum2');
+                this.frame.setTexture('menu' + preselectedFrame);
+                this.currFrameNum = preselectedFrame;
+            }
+            else {
+                console.log("Error - Menu request out of range");
+            }
         }
     }
 }
